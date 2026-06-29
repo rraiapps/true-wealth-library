@@ -1,4 +1,56 @@
 <!DOCTYPE html>
+<!--
+==================================================================================
+  THE TRUE WEALTH LIBRARY  ·  Aligned Wealth Management
+  Single-file static web app. No build step. Open in any browser to preview,
+  open in any code editor (VS Code, etc.) to edit. Curated from "The Right
+  Mountain" by Matt Ludmer.
+
+  ───────────────────────────────────────────────────────────────────────────
+  WHERE TO EDIT  (search the file for the >>> markers below)
+  ───────────────────────────────────────────────────────────────────────────
+
+  >>> BRAND COLORS & FONTS
+      In the <style> block, see ":root { --navy / --gold / --cream ... }".
+      Change a value once and it updates everywhere. Fonts are loaded from
+      Google Fonts in the <head> (Cormorant Garamond + DM Sans).
+
+  >>> LOGO
+      <img class="mark" src="data:image/png;base64,...">  in the <header>.
+      Replace the data URI with your own (or use src="logo.png" and ship the
+      file alongside index.html).
+
+  >>> PAGE TEXT  (headline, subtitle, footer)
+      All in the HTML: <header class="hero">, the footer, and the
+      "Start Here" copy in <section class="starthere">.
+
+  >>> AMAZON AFFILIATE TAG
+      In the <script> block, the very first line: const AMZ_TAG = "YOURTAG-20".
+      Replace with your Amazon Associates ID. All "Find on Amazon" buttons
+      (books + audio) update automatically.
+
+  >>> THE RESOURCE LIST  (add / edit / remove books)
+      Near the bottom, in the <script> block: the "const DATA = [ ... ]" array.
+      Each entry is one resource. Copy an existing line and edit the fields:
+
+        { title:"Book Title", author:"Author Name",
+          subject:"Money & Investing",      // must match a SUBJECTS value below
+          tier:"Foundational",              // "Foundational" or "Deeper Study"
+          type:"book",                      // book | website | audio | podcast | text
+          link:"https://example.com",       // OPTIONAL — only for websites/podcasts
+          start:"Investing & Capital" }     // OPTIONAL — adds it to the "Start Here" band
+
+      Subject categories are defined just above, in "const SUBJECTS = [ ... ]".
+      To add a brand-new subject, add it to SUBJECTS and use it in entries.
+
+  >>> SEARCH / FILTER BEHAVIOR
+      The "apply()" function and listeners at the very bottom of <script>.
+      (No need to touch this for content changes.)
+
+  Note: data is hardcoded in this file. A future version can read the list
+  from a Supabase table so non-developers can edit it without touching code.
+==================================================================================
+-->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -137,6 +189,14 @@
   }
   .item a.it-link:hover{color:var(--gold);}
   .item a.it-link svg{width:13px;height:13px;}
+  .item a.it-buy{
+    margin-top:12px;align-self:flex-start;font-size:12px;font-weight:600;text-decoration:none;
+    display:inline-flex;align-items:center;gap:6px;color:var(--navy);
+    border:1px solid var(--rule);border-radius:7px;padding:7px 12px;background:var(--cream);
+    transition:background .14s ease,border-color .14s ease,color .14s ease;
+  }
+  .item a.it-buy:hover{background:var(--navy);color:#fff;border-color:var(--navy);}
+  .item a.it-buy svg{width:12px;height:12px;}
   .star{color:var(--gold);font-size:13px;margin-left:6px;}
 
   .empty{text-align:center;padding:80px 20px;color:#7a7062;}
@@ -145,6 +205,7 @@
 
   footer{border-top:1px solid var(--rule);padding:30px 0 60px;text-align:center;color:#9a8f7c;font-size:12.5px;}
   footer a{color:var(--navy);font-weight:600;text-decoration:none;}
+  footer .disclosure{margin-top:10px;font-size:11.5px;font-style:italic;color:#a89d89;}
 
   @media(max-width:880px){
     .sh-grid{grid-template-columns:repeat(2,1fr);}
@@ -217,9 +278,25 @@
 <footer class="wrap">
   Curated from <em>The Right Mountain</em> by Matt Ludmer with Kristin Kaye. &nbsp;·&nbsp;
   Explore more at <a href="https://alignedwealthmanagement.com/true-wealth/" target="_blank" rel="noopener">alignedwealthmanagement.com</a>
+  <div class="disclosure">As an Amazon Associate, Aligned Wealth Management earns from qualifying purchases.</div>
 </footer>
 
 <script>
+/* ============================================================
+   >>> AMAZON ASSOCIATES TAG  —  EDIT THIS ONE LINE
+   Replace YOURTAG-20 with your Associates tracking ID. Every
+   "Find on Amazon" button (books + audio) uses it automatically.
+   ============================================================ */
+const AMZ_TAG = "awmtruewealth-20";
+
+// Builds a tag-tracked Amazon search link for a resource.
+function amazonLink(d){
+  const clean = d.title.replace(/\s*\([^)]*\)/g, "").trim();          // drop "(audio series)" etc.
+  const dept = d.type === "book" ? "&i=stripbooks" : "";
+  const k = encodeURIComponent(clean + " " + d.author).replace(/%20/g, "+");
+  return `https://www.amazon.com/s?k=${k}${dept}&tag=${AMZ_TAG}`;
+}
+
 const SUBJECTS = ["Integral Theory","Money & Investing","Business","Judaism","Buddhism","Spiritual Awakening","Psychology & Personal Growth","Literature"];
 
 const DATA = [
@@ -356,13 +433,17 @@ function itemHTML(d){
   const safe = (d.title+' '+d.author).toLowerCase();
   const linkHTML = d.link ? `<a class="it-link" href="${d.link}" target="_blank" rel="noopener">Visit
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M7 7h10v10"/></svg></a>` : '';
+  const buyHTML = (d.type==='book' || d.type==='audio')
+    ? `<a class="it-buy" href="${amazonLink(d)}" target="_blank" rel="noopener nofollow sponsored">Find on Amazon
+       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M7 7h10v10"/></svg></a>`
+    : '';
   return `<article class="item" data-search="${safe}" data-tier="${d.tier}" data-type="${d.type}" data-start="${d.start?'1':'0'}">
     <div class="it-top">
       <span class="it-title">${d.title}${d.start?'<span class="star" title="Start Here">&#9733;</span>':''}</span>
       <span class="badge b-${d.type}">${TYPE_LABEL[d.type]}</span>
     </div>
     ${d.author?`<div class="it-sub"><span class="it-author">${d.author}</span></div>`:'<div class="it-sub">&nbsp;</div>'}
-    ${linkHTML}
+    ${linkHTML}${buyHTML}
   </article>`;
 }
 
