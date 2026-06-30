@@ -182,7 +182,7 @@
   .item .it-sub{font-size:13px;color:#666;margin-bottom:auto;}
   .item .it-author{color:var(--ink);font-weight:500;}
   .item a.it-link{
-    margin-top:12px;align-self:flex-end;text-decoration:none;line-height:0;
+    text-decoration:none;line-height:0;
     display:inline-flex;align-items:center;justify-content:center;
     padding:2px;background:transparent;transition:opacity .14s ease,transform .14s ease;
   }
@@ -190,7 +190,7 @@
   .item a.it-link:focus-visible{outline:2px solid var(--navy);outline-offset:3px;}
   .item a.it-link .link-ico{width:20px;height:20px;display:block;}
   .item a.it-buy{
-    margin-top:12px;align-self:flex-end;text-decoration:none;line-height:0;
+    text-decoration:none;line-height:0;
     display:inline-flex;align-items:center;justify-content:center;
     border:0;border-radius:6px;padding:2px;background:transparent;
     transition:opacity .14s ease,transform .14s ease;
@@ -206,6 +206,40 @@
 
   footer{border-top:1px solid var(--rule);padding:30px 0 60px;text-align:center;color:#888;font-size:12.5px;}
   footer a{color:var(--teal);font-weight:600;text-decoration:none;}
+
+  /* ---------- DETAIL: foot row, affordances, modal ---------- */
+  .it-foot{display:flex;align-items:center;justify-content:flex-end;margin-top:12px;min-height:21px;}
+  .it-more{margin-right:auto;background:none;border:0;padding:0;cursor:pointer;
+    font-family:var(--body);font-size:12.5px;font-weight:600;color:var(--teal);
+    text-decoration:underline;text-underline-offset:3px;}
+  .it-more:hover{color:var(--teal-deep);}
+  .item.has-detail{cursor:pointer;}
+  .item.has-detail .it-title{transition:color .14s ease;}
+  .item.has-detail:hover .it-title{color:var(--teal);}
+  .sh-card.has-detail{cursor:pointer;}
+  .sh-card.has-detail:focus-visible{outline:2px solid var(--teal);outline-offset:3px;}
+
+  .modal-overlay{position:fixed;inset:0;background:rgba(38,38,38,.55);
+    display:flex;align-items:center;justify-content:center;padding:24px;z-index:60;
+    opacity:0;transition:opacity .18s ease;}
+  .modal-overlay[hidden]{display:none;}
+  .modal-overlay.open{opacity:1;}
+  .modal{background:#fff;max-width:560px;width:100%;max-height:85vh;overflow-y:auto;
+    border-radius:14px;padding:32px 34px;position:relative;
+    box-shadow:0 24px 60px -20px rgba(38,38,38,.5);}
+  .modal-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border:0;border-radius:50%;
+    background:var(--bg-alt);color:#555;font-size:18px;line-height:1;cursor:pointer;}
+  .modal-close:hover{background:#e2e2e2;color:var(--ink);}
+  .modal .m-badge{font-size:10px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;
+    color:#5a5a5a;background:var(--bg-alt);padding:4px 8px;border-radius:20px;}
+  .modal h2{font-family:var(--display);color:var(--ink);font-size:28px;font-weight:600;
+    line-height:1.15;margin:16px 0 4px;}
+  .modal .m-author{font-family:var(--body);color:var(--teal);font-weight:500;font-size:14px;margin-bottom:20px;}
+  .modal .m-body p{font-size:15px;line-height:1.6;color:#3a3a3a;margin:0 0 14px;}
+  .modal .m-link{display:inline-flex;align-items:center;gap:8px;margin-top:8px;
+    background:var(--teal);color:#fff;text-decoration:none;font-weight:600;font-size:13.5px;
+    padding:10px 18px;border-radius:8px;transition:background .14s ease;}
+  .modal .m-link:hover{background:var(--teal-deep);}
 
   @media(max-width:880px){
     .sh-grid{grid-template-columns:repeat(2,1fr);}
@@ -277,6 +311,17 @@
   Explore more at <a href="https://alignedwealthmanagement.com/true-wealth/" target="_blank" rel="noopener">alignedwealthmanagement.com</a>
 </footer>
 
+<div class="modal-overlay" id="detailModal" hidden role="dialog" aria-modal="true" aria-labelledby="m-title">
+  <div class="modal" role="document">
+    <button class="modal-close" id="modalClose" aria-label="Close">&times;</button>
+    <span class="m-badge" id="m-badge"></span>
+    <h2 id="m-title"></h2>
+    <div class="m-author" id="m-author"></div>
+    <div class="m-body" id="m-body"></div>
+    <a class="m-link" id="m-link" href="#" target="_blank" rel="noopener"></a>
+  </div>
+</div>
+
 <script>
 // Builds an Amazon search link for a resource.
 function amazonLink(d){
@@ -290,20 +335,20 @@ const SUBJECTS = ["Integral Theory","Money & Investing","Business","Judaism","Bu
 
 const DATA = [
   // ----- Integral Theory -----
-  {title:"A Brief History of Everything", author:"Ken Wilber", subject:"Integral Theory", tier:"Foundational", type:"book", start:"Integral Framework"},
-  {title:"Integral Life Practice", author:"Ken Wilber, Terry Patten, Adam Leonard & Marco Morelli", subject:"Integral Theory", tier:"Foundational", type:"book"},
-  {title:"IntegralLife.com", author:"Integral Life", subject:"Integral Theory", tier:"Foundational", type:"website", link:"https://integrallife.com"},
-  {title:"Integral Spirituality", author:"Ken Wilber", subject:"Integral Theory", tier:"Deeper Study", type:"book"},
-  {title:"No Boundary", author:"Ken Wilber", subject:"Integral Theory", tier:"Deeper Study", type:"book"},
-  {title:"The One Two Three of God", author:"Ken Wilber", subject:"Integral Theory", tier:"Deeper Study", type:"audio"},
-  {title:"Developmental Politics", author:"Steve McIntosh", subject:"Integral Theory", tier:"Deeper Study", type:"book"},
-  {title:"Conscious Leadership", author:"Steve McIntosh & John Mackey", subject:"Integral Theory", tier:"Deeper Study", type:"book"},
-  {title:"The Institute for Cultural Evolution", author:"Steve McIntosh", subject:"Integral Theory", tier:"Deeper Study", type:"website", link:"https://www.developmentalphilosophy.org"},
+  {title:"A Brief History of Everything", author:"Ken Wilber", subject:"Integral Theory", tier:"Foundational", type:"book", start:"Integral Framework", blurb:"Ken Wilber's accessible tour of his integral map of reality — matter, mind, and spirit in one framework.", synopsis:["Written as an accessible question-and-answer dialogue, this book distills Ken Wilber's 'integral' framework — his attempt to weave science, psychology, spirituality, and culture into a single coherent map. Wilber traces a thread of development running through matter, life, mind, and spirit, and introduces the tools his later work builds on: the four quadrants (the inner and outer dimensions of individuals and collectives) and the idea that reality unfolds in nested stages.","Ranging across evolution, gender, ecology, and the world's wisdom traditions, it serves as the most approachable entry point to Wilber's thinking and a foundation for the Integral Theory resources that follow."]},
+  {title:"Integral Life Practice", author:"Ken Wilber, Terry Patten, Adam Leonard & Marco Morelli", subject:"Integral Theory", tier:"Foundational", type:"book", blurb:"A practical handbook for growing across body, mind, spirit, and shadow at once.", synopsis:["A hands-on companion to Ken Wilber's integral framework, this guide turns theory into daily practice. Co-written with Terry Patten, Adam Leonard, and Marco Morelli, it organizes personal growth into core modules — body, mind, spirit, and shadow (the unconscious or disowned parts of ourselves) — and argues that a balanced life means training all of them rather than over-developing one.","The book supplies concrete exercises and lets readers assemble a customized practice that fits their time and temperament, making it the most actionable entry point in the integral literature."]},
+  {title:"IntegralLife.com", author:"Integral Life", subject:"Integral Theory", tier:"Foundational", type:"website", link:"https://integrallife.com", blurb:"The online home of the integral community — essays, dialogues, and courses.", synopsis:["Integral Life is the primary online hub for the integral movement, co-founded by Ken Wilber. It gathers essays, video dialogues, interviews, and courses that apply the integral framework to spirituality, psychology, politics, and culture.","For anyone exploring the ideas in Wilber's books, the site offers an ongoing, evolving body of conversation and learning that extends well beyond the printed page."]},
+  {title:"Integral Spirituality", author:"Ken Wilber", subject:"Integral Theory", tier:"Deeper Study", type:"book", blurb:"Wilber on how spirituality can be reframed to hold up in a modern, skeptical age.", synopsis:["In this more advanced work, Ken Wilber takes on the role of religion and spirituality in a skeptical modern and postmodern age. He argues that authentic spiritual experience and contemporary thought need not be at odds, and offers a framework for integrating the world's contemplative traditions with the findings of science and developmental psychology.","Among its key ideas is the distinction between temporary states of consciousness and the lasting stages of development a person grows through — and a model for how spiritual practice can mature alongside the rest of one's growth. It assumes some familiarity with Wilber's earlier work."]},
+  {title:"No Boundary", author:"Ken Wilber", subject:"Integral Theory", tier:"Deeper Study", type:"book", blurb:"An accessible early Wilber on how the boundaries we draw create our suffering.", synopsis:["One of Ken Wilber's earliest and most approachable books, No Boundary explores how human beings divide their experience — self from other, mind from body, life from death — and how those very boundaries become a source of conflict and suffering. Drawing on both Eastern contemplative traditions and Western psychology, it maps how different therapies and practices address different layers of identity.","The book is a clear, personal introduction to the idea that expanding our sense of self can dissolve divisions we normally take for granted."]},
+  {title:"The One Two Three of God", author:"Ken Wilber", subject:"Integral Theory", tier:"Deeper Study", type:"audio", blurb:"Wilber's audio teaching on meeting the divine in first, second, and third person.", synopsis:["In this audio program, Ken Wilber explores three distinct ways human beings relate to the divine: in the first person (the I of pure awareness, or the Witness), the second person (the Thou approached through devotion and surrender), and the third person (the It of Spirit expressed as the whole of nature and the cosmos).","Wilber suggests that a complete spiritual life honors all three perspectives rather than privileging only one, tying the discussion back to his broader integral approach."]},
+  {title:"Developmental Politics", author:"Steve McIntosh", subject:"Integral Theory", tier:"Deeper Study", type:"book", blurb:"McIntosh's case for easing polarization by integrating the truths in rival value systems.", synopsis:["Steve McIntosh applies a developmental, integral lens to political polarization, arguing that the major value systems in contemporary culture — progressive, modernist, and traditional — each carry partial truths and characteristic blind spots. Rather than one side simply defeating the others, he proposes a higher integration that honors what each gets right.","The book frames cultural and political life as an ongoing developmental process, offering a path toward common ground without flattening genuine differences."]},
+  {title:"Conscious Leadership", author:"Steve McIntosh & John Mackey", subject:"Integral Theory", tier:"Deeper Study", type:"book", blurb:"Leading with higher purpose, from the Conscious Capitalism movement.", synopsis:["Co-authored by Whole Foods co-founder John Mackey with Steve McIntosh and Carter Phipps, this book distills lessons on leading with purpose from the Conscious Capitalism movement. It argues that the most effective leaders are animated by a higher mission and a commitment to all of a company's stakeholders — not shareholders alone.","Drawing on Mackey's own experience and a developmental view of human growth, it lays out the mindset and practices of values-driven leadership."]},
+  {title:"The Institute for Cultural Evolution", author:"Steve McIntosh", subject:"Integral Theory", tier:"Deeper Study", type:"website", link:"https://www.developmentalphilosophy.org", blurb:"McIntosh's think tank applying developmental ideas to cultural and political evolution.", synopsis:["Co-founded by Steve McIntosh, the Institute for Cultural Evolution is a think tank that applies developmental and integral ideas to America's cultural and political divides. Its work centers on identifying shared values across the political spectrum and advancing what it calls cultural evolution — the gradual maturing of a society's worldviews.","The site, now hosted under the Institute for Developmental Philosophy, collects the organization's writing, research, and policy proposals."]},
 
   // ----- Money & Investing -----
   {title:"Think and Grow Rich", author:"Napoleon Hill", subject:"Money & Investing", tier:"Foundational", type:"book"},
   {title:"Rich Dad, Poor Dad", author:"Robert T. Kiyosaki", subject:"Money & Investing", tier:"Foundational", type:"book"},
-  {title:"Index Funds: The 12-Step Recovery Program for Active Investors", author:"Mark Hebner", subject:"Money & Investing", tier:"Foundational", type:"book", start:"Investing & Capital"},
+  {title:"Index Funds: The 12-Step Recovery Program for Active Investors", author:"Mark Hebner", subject:"Money & Investing", tier:"Foundational", type:"book", start:"Investing & Capital", blurb:"An evidence-based case for disciplined, low-cost index investing over trying to beat the market.", synopsis:["Mark Hebner makes the evidence-based case for passive, low-cost index investing over the attempt to beat the market through stock-picking or market-timing. Framed playfully as a twelve-step program for recovering active investors, the book walks through decades of academic research on market efficiency, the long-term drag of fees and turnover, and the behavioral traps that erode returns.","The approach it builds toward is a broadly diversified portfolio of index funds held for the long run — a strategy grounded in data rather than forecasting."]},
   {title:"Index Fund Advisors", author:"ifa.com", subject:"Money & Investing", tier:"Foundational", type:"website", link:"https://www.ifa.com"},
   {title:"Richer, Wiser, Happier", author:"William Green", subject:"Money & Investing", tier:"Deeper Study", type:"book"},
   {title:"The Seven Stages of Money Maturity", author:"George Kinder", subject:"Money & Investing", tier:"Deeper Study", type:"book"},
@@ -321,7 +366,7 @@ const DATA = [
 
   // ----- Judaism -----
   {title:"The Torah", author:"", subject:"Judaism", tier:"Foundational", type:"text"},
-  {title:"Everything is God: The Radical Path of Nondual Judaism", author:"Jay Michaelson", subject:"Judaism", tier:"Foundational", type:"book", start:"Judaism & Meaning"},
+  {title:"Everything is God: The Radical Path of Nondual Judaism", author:"Jay Michaelson", subject:"Judaism", tier:"Foundational", type:"book", start:"Judaism & Meaning", blurb:"An accessible introduction to nondual Judaism — the mystical view that all reality is an expression of the divine.", synopsis:["Jay Michaelson offers an accessible introduction to nondual Judaism — the mystical understanding, rooted in Kabbalah and Hasidic thought, that everything in existence is a manifestation of the divine, and that God is not separate from the world but its very ground.","Written for a contemporary reader, the book distinguishes this view from conventional theism, connects it to contemplative practice, and bridges Jewish mysticism with the wider language of nondual spirituality — making an old esoteric current approachable without watering it down."]},
   {title:"Be Still and Get Going", author:"Rabbi Alan Lew", subject:"Judaism", tier:"Foundational", type:"book"},
   {title:"Chabad.org", author:"Chabad-Lubavitch", subject:"Judaism", tier:"Foundational", type:"website", link:"https://www.chabad.org"},
   {title:"The Tanya", author:"Rabbi Schneur Zalman", subject:"Judaism", tier:"Deeper Study", type:"text"},
@@ -336,7 +381,7 @@ const DATA = [
   {title:"Start Where You Are", author:"Pema Chödrön", subject:"Buddhism", tier:"Foundational", type:"book"},
   {title:"Carefree Dignity", author:"Tsoknyi Rinpoche", subject:"Buddhism", tier:"Foundational", type:"book"},
   {title:"Zen Mind, Beginner's Mind", author:"Shunryu Suzuki", subject:"Buddhism", tier:"Foundational", type:"book"},
-  {title:"The Myth of Freedom and the Way of Meditation", author:"Chögyam Trungpa", subject:"Buddhism", tier:"Deeper Study", type:"book", start:"Buddhist Foundations"},
+  {title:"The Myth of Freedom and the Way of Meditation", author:"Chögyam Trungpa", subject:"Buddhism", tier:"Deeper Study", type:"book", start:"Buddhist Foundations", blurb:"Trungpa on how the mind traps itself, and meditation as the path to genuine freedom.", synopsis:["In this collection of teachings, Chögyam Trungpa examines the ways the mind imprisons itself — through ego, fixed concepts, and the search for security — and presents meditation as the path to genuine, unforced freedom. He works through the patterns of confused mind, the practice of meditation, and how to relate directly to emotions rather than suppressing them or acting them out.","Concise and direct, it reflects Trungpa's signature warning against spiritual materialism — the tendency to turn even spirituality into one more project of self-improvement and acquisition."]},
   {title:"Training the Mind and Cultivating Lovingkindness", author:"Chögyam Trungpa", subject:"Buddhism", tier:"Deeper Study", type:"book"},
   {title:"The Profound Treasury of the Ocean of Dharma (Vols 1–3)", author:"Chögyam Trungpa", subject:"Buddhism", tier:"Deeper Study", type:"book"},
   {title:"The Collected Works of Chögyam Trungpa (Vols 1–9)", author:"Chögyam Trungpa", subject:"Buddhism", tier:"Deeper Study", type:"book"},
@@ -366,7 +411,7 @@ const DATA = [
   {title:"The Mystery School", author:"Jeff Carreira", subject:"Spiritual Awakening", tier:"Deeper Study", type:"website", link:"https://mysteryschool-memberscircle.com"},
 
   // ----- Psychology & Personal Growth -----
-  {title:"Emotional Intelligence", author:"Daniel Goleman", subject:"Psychology & Personal Growth", tier:"Foundational", type:"book", start:"Self-Mastery"},
+  {title:"Emotional Intelligence", author:"Daniel Goleman", subject:"Psychology & Personal Growth", tier:"Foundational", type:"book", start:"Self-Mastery", blurb:"Goleman's landmark argument that emotional skill can matter as much as IQ — and can be developed.", synopsis:["Daniel Goleman's landmark book argues that the qualities grouped under emotional intelligence — self-awareness, managing one's emotions, motivation, empathy, and skill in relationships — can matter as much as raw intellect for success, leadership, and wellbeing. Drawing on neuroscience and psychology, he explains how the brain's emotional circuitry can either support or hijack our reasoning.","The book popularized EQ as a concept and reframed emotional skill as something that can be understood and cultivated rather than fixed at birth."]},
   {title:"The Power of Positive Thinking", author:"Norman Vincent Peale", subject:"Psychology & Personal Growth", tier:"Foundational", type:"book"},
   {title:"Awaken the Giant Within", author:"Tony Robbins", subject:"Psychology & Personal Growth", tier:"Foundational", type:"book"},
   {title:"Emotional Alchemy: How the Mind Can Heal the Heart", author:"Tara Bennett-Goleman", subject:"Psychology & Personal Growth", tier:"Foundational", type:"book"},
@@ -391,9 +436,10 @@ subjectSel.innerHTML = '<option value="all">All subjects</option>' +
   SUBJECTS.map(s=>`<option value="${s}">${s}</option>`).join('');
 
 // --- Start Here cards ---
+DATA.forEach((d,i)=>{ d._i = i; });
 const shItems = DATA.filter(d=>d.start);
 document.getElementById('shGrid').innerHTML = shItems.map((d,i)=>`
-  <div class="sh-card">
+  <div class="sh-card${d.synopsis?' has-detail':''}"${d.synopsis?` data-idx="${d._i}" role="button" tabindex="0" aria-label="Learn more about ${d.title.replace(/"/g,'&quot;')}"`:''}>
     <div class="num">${i+1}</div>
     <div class="tag">${d.start}</div>
     <div class="t">${d.title.split(':')[0]}</div>
@@ -424,13 +470,15 @@ function itemHTML(d){
   const buyHTML = (d.type==='book' || d.type==='audio')
     ? `<a class="it-link" href="${amazonLink(d)}" target="_blank" rel="noopener" aria-label="Find on Amazon"><img class="link-ico" src="data:image/png;base64,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" alt=""></a>`
     : '';
-  return `<article class="item" data-search="${safe}" data-tier="${d.tier}" data-type="${d.type}" data-start="${d.start?'1':'0'}">
+  const moreHTML = (d.synopsis && d.synopsis.length)
+    ? `<button class="it-more" type="button">Learn more</button>` : '';
+  return `<article class="item${d.synopsis?' has-detail':''}"${d.synopsis?` data-idx="${d._i}"`:''} data-search="${safe}" data-tier="${d.tier}" data-type="${d.type}" data-start="${d.start?'1':'0'}">
     <div class="it-top">
       <span class="it-title">${d.title}${d.start?'<span class="star" title="Start Here">&#9733;</span>':''}</span>
       <span class="badge b-${d.type}">${TYPE_LABEL[d.type]}</span>
     </div>
     ${d.author?`<div class="it-sub"><span class="it-author">${d.author}</span></div>`:'<div class="it-sub">&nbsp;</div>'}
-    ${linkHTML}${buyHTML}
+    <div class="it-foot">${moreHTML}${linkHTML}${buyHTML}</div>
   </article>`;
 }
 
@@ -492,6 +540,52 @@ document.getElementById('reset').addEventListener('click', ()=>{
 });
 
 apply();
+
+// --- detail modal ---
+const modal = document.getElementById('detailModal');
+let lastFocus = null;
+function openDetail(idx){
+  const d = DATA[idx];
+  if(!d || !d.synopsis) return;
+  document.getElementById('m-badge').textContent = TYPE_LABEL[d.type];
+  document.getElementById('m-title').textContent = d.title;
+  document.getElementById('m-author').textContent = d.author || '';
+  document.getElementById('m-body').innerHTML = d.synopsis.map(p=>`<p>${p}</p>`).join('');
+  const link = document.getElementById('m-link');
+  const href = d.link ? d.link : ((d.type==='book'||d.type==='audio') ? amazonLink(d) : '');
+  if(href){ link.href = href; link.textContent = d.link ? 'Visit website' : 'Find on Amazon'; link.style.display='inline-flex'; }
+  else { link.style.display='none'; }
+  lastFocus = document.activeElement;
+  modal.hidden = false;
+  requestAnimationFrame(()=>modal.classList.add('open'));
+  document.getElementById('modalClose').focus();
+  document.body.style.overflow = 'hidden';
+}
+function closeDetail(){
+  modal.classList.remove('open');
+  setTimeout(()=>{ modal.hidden = true; }, 180);
+  document.body.style.overflow = '';
+  if(lastFocus) lastFocus.focus();
+}
+document.getElementById('modalClose').addEventListener('click', closeDetail);
+modal.addEventListener('click', e=>{ if(e.target===modal) closeDetail(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape' && !modal.hidden) closeDetail(); });
+
+// open from a card or Start Here tile (but not when clicking the external link icon)
+document.addEventListener('click', e=>{
+  const card = e.target.closest('.has-detail');
+  if(!card) return;
+  if(e.target.closest('a')) return;     // let the resource link work normally
+  const idx = card.dataset.idx;
+  if(idx != null) openDetail(+idx);
+});
+document.addEventListener('keydown', e=>{
+  const el = document.activeElement;
+  if((e.key==='Enter' || e.key===' ') && el && el.classList.contains('sh-card') && el.dataset.idx!=null){
+    e.preventDefault(); openDetail(+el.dataset.idx);
+  }
+});
 </script>
+
 </body>
 </html>
